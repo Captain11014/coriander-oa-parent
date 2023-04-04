@@ -1,7 +1,9 @@
 package com.coriander;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.coriander.auth.mapper.SysRoleMapper;
+import com.coriander.auth.service.SysRoleService;
 import com.coriander.model.system.SysRole;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,11 +25,25 @@ public class AuthTest {
     private SysRoleMapper sysRoleMapper;
 
 
+    @Resource
+    private SysRoleService sysRoleService;
+
+
     @Test
     public void testSysRoleMapper(){
 
         List<SysRole> sysRoles = sysRoleMapper.selectList(null);
         sysRoles.forEach(System.out::println);
+
+    }
+
+
+    @Test
+    public void testService(){
+
+//        List<SysRole> list = sysRoleService.list();
+//        list.forEach(System.out::println);
+        System.out.println();
 
     }
 

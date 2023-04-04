@@ -1,5 +1,5 @@
 server:
-  port: 8800
+  port: 8888
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 查看日志

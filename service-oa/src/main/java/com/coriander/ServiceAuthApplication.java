@@ -11,7 +11,6 @@ import org.springframework.context.annotation.ComponentScan;
  * 2023/4/3 23:37
  */
 @SpringBootApplication
-@MapperScan("com.coriander.*.mapper")
 @ComponentScan("com.coriander.*")
 public class ServiceAuthApplication {
 
