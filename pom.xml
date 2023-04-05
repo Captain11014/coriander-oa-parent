@@ -28,6 +28,7 @@
         <knife4j.version>4.0.0</knife4j.version>
         <jwt.version>0.9.1</jwt.version>
         <fastjson.version>2.0.21</fastjson.version>
+        <pagehelper-boot-version>1.4.6</pagehelper-boot-version>
     </properties>
 
     <!--配置dependencyManagement锁定依赖的版本-->
@@ -38,6 +39,26 @@
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
+            </dependency>
+            <!-- 分页插件 https://mvnrepository.com/artifact/com.github.pagehelper/pagehelper-spring-boot-starter -->
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper-boot-version}</version>
+                <!--使用spring boot2整合 pagehelper-spring-boot-starter必须排除一下依赖
+                     因为pagehelper-spring-boot-starter也已经在pom依赖了mybatis与mybatis-spring
+                     所以会与mybatis-plus-boot-starter中的mybatis与mybatis-spring发生冲突
+                 -->
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.mybatis</groupId>
+                        <artifactId>mybatis</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.mybatis</groupId>
+                        <artifactId>mybatis-spring</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <!--mysql-->
             <dependency>
