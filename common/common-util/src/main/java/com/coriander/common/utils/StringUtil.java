@@ -35,7 +35,7 @@ public class StringUtil {
 
 
     /**
-     * 判断字符串是否为空字符串
+     * 判断字符串是否为null或空字符串
      * @param str
      * @return 空字符串：true  非空字符串：false
      */

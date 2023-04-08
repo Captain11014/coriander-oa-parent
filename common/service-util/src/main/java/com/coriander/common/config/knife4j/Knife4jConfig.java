@@ -47,7 +47,8 @@ public class Knife4jConfig {
                 .select()
                 //只显示admin路径下的页面
                 .apis(RequestHandlerSelectors.basePackage("com.coriander"))
-                .paths(PathSelectors.regex("/admin/.*"))
+//                .paths(PathSelectors.regex("/admin/.*"))
+                .paths(PathSelectors.any())
                 .build()
                 .globalOperationParameters(pars);
         return adminApi;
@@ -59,7 +60,6 @@ public class Knife4jConfig {
                 .title("后台管理系统-API文档")
                 .description("本文档描述了后台管理系统微服务接口定义")
                 .version("1.0")
-                .contact(new Contact("captain", "http://atguigu.com", "atguigu@qq.com"))
                 .build();
     }
 
