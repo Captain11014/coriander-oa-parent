@@ -17,6 +17,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -117,9 +118,10 @@ public class SysRoleController extends BaseController {
      * @return
      */
     @ApiOperation("根据id批量删除")
-    @PostMapping("/batchDelSysRole")
-    public AjaxResult batchDelSysRole(@RequestBody List<Long> ids){
-        boolean b = sysRoleService.removeByIds(ids);
+    @PostMapping("/batchDelSysRole/{ids}")
+    public AjaxResult batchDelSysRole(@PathVariable Long[] ids){
+        List<Long> idList = Arrays.asList(ids);
+        boolean b = sysRoleService.removeByIds(idList);
         return toAjax(b);
     }
 

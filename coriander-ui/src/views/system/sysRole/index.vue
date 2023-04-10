@@ -231,23 +231,32 @@ export default {
     },
 
     //删除
-    batchRemove(id){
-        let _this = this;
-        if(id != undefined){
-            this.ids.push(id);
-            console.log(this.ids);
-        }
-        console.log(this.ids);
+    batchRemove(id) {
+      let roleIds = id || this.ids;
+      let _this = this;
+      // if (id != undefined) {
+      //   roleIds.push(id);
+      //   // console.log(this.ids);
+      // }else{
+      //   roleIds = _this.ids;
+      // }
+      console.log(this.ids);
 
-        this.$modal.confirm("是否确定删除"+this.ids+"的数据").then(function(){
-            return batchDelSysRole(_this.ids);
-        }).then((response) => {
-            console.log(response);
-            this.getSysRoleList();
-            this.$modal.msgSuccess("删除成功");
+      this.$modal
+        .confirm("是否确定删除" + roleIds + "的数据")
+        .then(function() {
+          return batchDelSysRole(roleIds);
         })
-
-    },
+        .then(response => {
+          console.log(response);
+          this.getSysRoleList();
+          this.$modal.msgSuccess("删除成功");
+          // this.ids = [];
+        })
+        .catch(() => {
+          // this.ids = [];
+        });
+    }
   }
 };
 </script>

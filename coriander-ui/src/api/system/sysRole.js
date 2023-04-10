@@ -46,9 +46,8 @@ export function updateSysRole(data){
   export function batchDelSysRole(ids){
 
     return request({
-        url: '/admin/system/sysRole/batchDelSysRole',
+        url: '/admin/system/sysRole/batchDelSysRole/'+ids,
         method: 'post',
-        data:ids
     })
 }
 
