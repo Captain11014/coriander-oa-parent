@@ -168,7 +168,7 @@ import {
   updateStatus
 } from "@/api/system/sysUser";
 
-import { findAll, getRolesById,assignRoles } from "@/api/system/sysRole";
+import { findAll, getRolesById, assignRoles } from "@/api/system/sysRole";
 
 export default {
   data() {
@@ -193,7 +193,7 @@ export default {
       userRoleIds: [], // 用户的角色ID的列表
       isIndeterminate: false, // 是否是不确定的
       checkAll: false, // 是否全选
-      roleList:[],
+      roleList: []
     };
   },
 
