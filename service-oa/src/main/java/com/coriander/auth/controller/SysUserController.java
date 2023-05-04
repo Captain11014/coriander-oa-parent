@@ -97,5 +97,13 @@ public class SysUserController extends BaseController {
     }
 
 
+    @ApiOperation(value = "更新状态")
+    @GetMapping("updateStatus/{id}/{status}")
+    public AjaxResult updateStatus(@PathVariable Long id, @PathVariable Integer status) {
+        sysUserService.updateStatus(id, status);
+        return success();
+    }
+
+
 
 }

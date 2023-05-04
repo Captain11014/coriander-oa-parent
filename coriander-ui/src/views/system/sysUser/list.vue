@@ -77,6 +77,13 @@
             title="修改"
           />
           <el-button
+            type="warning"
+            icon="el-icon-baseball"
+            size="mini"
+            @click="showAssignRole(scope.row)"
+            title="分配角色"
+          />
+          <el-button
             type="danger"
             icon="el-icon-delete"
             size="mini"
@@ -123,6 +130,30 @@
         <el-button type="primary" icon="el-icon-check" size="small" @click="submitForm">确 定</el-button>
       </span>
     </el-dialog>
+
+    <el-dialog title="分配角色" :visible.sync="dialogRoleVisible">
+      <el-form label-width="80px">
+        <el-form-item label="用户名">
+          <el-input disabled :value="form.username"></el-input>
+        </el-form-item>
+
+        <el-form-item label="角色列表">
+          <el-checkbox
+            :indeterminate="isIndeterminate"
+            v-model="checkAll"
+            @change="handleCheckAllChange"
+          >全选</el-checkbox>
+          <div style="margin: 15px 0;"></div>
+          <el-checkbox-group v-model="userRoleIds" @change="handleCheckedChange">
+            <el-checkbox v-for="role in allRoles" :key="role.id" :label="role.id">{{role.roleName}}</el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+      </el-form>
+      <div slot="footer">
+        <el-button type="primary" @click="assignRole" size="small">保存</el-button>
+        <el-button @click="dialogRoleVisible = false" size="small">取消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -133,8 +164,11 @@ import {
   addSysUser,
   updateSysUser,
   getSysUserById,
-  batchRemoveSysUser
+  batchRemoveSysUser,
+  updateStatus
 } from "@/api/system/sysUser";
+
+import { findAll, getRolesById,assignRoles } from "@/api/system/sysRole";
 
 export default {
   data() {
@@ -143,7 +177,7 @@ export default {
       list: [],
       params: {
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 5,
         keyword: undefined,
         createTimeBegin: undefined,
         createTimeEnd: undefined
@@ -152,12 +186,24 @@ export default {
       createTimes: "",
       total: 0,
       open: false,
-      ids: []
+      ids: [],
+
+      dialogRoleVisible: false,
+      allRoles: [], // 所有角色列表
+      userRoleIds: [], // 用户的角色ID的列表
+      isIndeterminate: false, // 是否是不确定的
+      checkAll: false, // 是否全选
+      roleList:[],
     };
   },
 
   created() {
     this.getSysUserList();
+
+    findAll().then(response => {
+      this.roleList = response.rows;
+      console.log(response);
+    });
   },
 
   //   watch : {
@@ -192,11 +238,11 @@ export default {
       };
     },
     handleAdd() {
-      reset();
+      this.reset();
       this.open = true;
     },
     handleUpdate(id) {
-      reset();
+      this.reset();
       this.open = true;
       this.$modal.loading("正在加载中...");
       getSysUserById(id).then(res => {
@@ -234,11 +280,11 @@ export default {
       let _this = this;
 
       let userIds = id || _this.ids;
-    //   if (id != undefined) {
-    //     this.ids.push(id);
-    //     console.log(this.ids);
-    //   }
-    //   console.log(this.ids);
+      //   if (id != undefined) {
+      //     this.ids.push(id);
+      //     console.log(this.ids);
+      //   }
+      //   console.log(this.ids);
 
       this.$modal
         .confirm("是否确定删除" + userIds + "的数据")
@@ -249,10 +295,76 @@ export default {
           console.log(response);
           this.getSysUserList();
           this.$modal.msgSuccess("删除成功");
-        //   this.ids = [];
-        }).catch(()=>{
-        //    this.ids = [];
+          //   this.ids = [];
         })
+        .catch(() => {
+          //    this.ids = [];
+        });
+    },
+
+    showAssignRole(row) {
+      this.form = row;
+      this.dialogRoleVisible = true;
+      this.getRoles();
+    },
+
+    getRoles() {
+      console.log(this.form.id);
+      getRolesById(this.form.id).then(response => {
+        console.log(response);
+        const { allRolesList, assginRoleList } = response.data;
+        this.allRoles = allRolesList;
+        this.userRoleIds = assginRoleList.map(item => item.id);
+        this.checkAll = allRolesList.length === assginRoleList.length;
+        this.isIndeterminate =
+          assginRoleList.length > 0 &&
+          assginRoleList.length < allRolesList.length;
+      });
+    },
+
+    /*
+    全选勾选状态发生改变的监听
+    */
+    handleCheckAllChange(value) {
+      // value 当前勾选状态true/false
+      // 如果当前全选, userRoleIds就是所有角色id的数组, 否则是空数组
+      this.userRoleIds = value ? this.allRoles.map(item => item.id) : [];
+      // 如果当前不是全选也不全不选时, 指定为false
+      this.isIndeterminate = false;
+    },
+
+    /*
+    角色列表选中项发生改变的监听
+    */
+    handleCheckedChange(value) {
+      const { userRoleIds, allRoles } = this;
+      this.checkAll =
+        userRoleIds.length === allRoles.length && allRoles.length > 0;
+      this.isIndeterminate =
+        userRoleIds.length > 0 && userRoleIds.length < allRoles.length;
+    },
+
+    assignRole() {
+      let assginRoleVo = {
+        userId: this.form.id,
+        roleIdList: this.userRoleIds
+      };
+      assignRoles(assginRoleVo).then(response => {
+        this.$message.success(response.message || "分配角色成功");
+        this.dialogRoleVisible = false;
+        this.getSysUserList();
+      });
+    },
+
+    switchStatus(row) {
+      row.status = row.status === 1 ? 0 : 1;
+      updateStatus(row.id, row.status).then(response => {
+        if (response.code) {
+          this.$message.success(response.message || "操作成功");
+          this.dialogVisible = false;
+          this.getSysUserList();
+        }
+      });
     }
   }
 };

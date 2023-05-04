@@ -10,6 +10,7 @@ import com.coriander.common.result.HttpStatus;
 import com.coriander.common.utils.StringUtil;
 import com.coriander.common.utils.page.TableDataInfo;
 import com.coriander.model.system.SysRole;
+import com.coriander.vo.system.AssginRoleVo;
 import com.coriander.vo.system.SysRoleQueryVo;
 import com.github.pagehelper.PageHelper;
 import io.swagger.annotations.Api;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 姓陈的
@@ -31,6 +33,23 @@ public class SysRoleController extends BaseController {
 
     @Resource
     private SysRoleService sysRoleService;
+
+
+    @ApiOperation(value = "根据用户获取角色数据")
+    @GetMapping("/toAssign/{userId}")
+    public AjaxResult toAssign(@PathVariable Long userId) {
+        System.out.println("-----------------------------------------------------------");
+        System.out.println("================================userId"+userId);
+        Map<String, Object> roleMap = sysRoleService.findRoleByAdminId(userId);
+        return success(roleMap);
+    }
+
+    @ApiOperation(value = "根据用户分配角色")
+    @PostMapping("/doAssign")
+    public AjaxResult doAssign(@RequestBody AssginRoleVo assginRoleVo) {
+        sysRoleService.doAssign(assginRoleVo);
+        return success();
+    }
 
 
     @ApiOperation("根据id查询角色")

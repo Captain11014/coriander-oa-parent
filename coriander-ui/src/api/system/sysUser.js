@@ -51,3 +51,11 @@ export function batchRemoveSysUser(ids) {
     })
 }
 
+
+export function updateStatus(id, status) {
+    return request({
+      url: `${api_path}/updateStatus/${id}/${status}`,
+      method: 'get'
+    })
+}
+
