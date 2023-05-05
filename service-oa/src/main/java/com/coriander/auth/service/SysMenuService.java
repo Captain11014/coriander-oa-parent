@@ -3,6 +3,7 @@ package com.coriander.auth.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.coriander.model.system.SysMenu;
+import com.coriander.vo.system.AssignMenuVo;
 
 import java.util.List;
 
@@ -27,4 +28,17 @@ public interface SysMenuService extends IService<SysMenu> {
      * @param id
      */
     void removeMenuById(Long id);
+
+    /**
+     * 根据角色获取菜单
+     * @param roleId
+     * @return
+     */
+    List<SysMenu> findSysMenuByRoleId(Long roleId);
+
+    /**
+     * 给角色分配权限
+     * @param assignMenuVo
+     */
+    void doAssign(AssignMenuVo assignMenuVo);
 }

@@ -5,6 +5,7 @@ import com.coriander.auth.service.SysMenuService;
 import com.coriander.common.core.BaseController;
 import com.coriander.common.result.AjaxResult;
 import com.coriander.model.system.SysMenu;
+import com.coriander.vo.system.AssignMenuVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,20 @@ public class SysMenuController extends BaseController {
     @Resource
     private SysMenuService sysMenuService;
 
+
+    @ApiOperation(value = "根据角色获取菜单")
+    @GetMapping("toAssign/{roleId}")
+    public AjaxResult toAssign(@PathVariable Long roleId) {
+        List<SysMenu> list = sysMenuService.findSysMenuByRoleId(roleId);
+        return success(list);
+    }
+
+    @ApiOperation(value = "给角色分配权限")
+    @PostMapping("/doAssign")
+    public AjaxResult doAssign(@RequestBody AssignMenuVo assignMenuVo) {
+        sysMenuService.doAssign(assignMenuVo);
+        return success();
+    }
 
     /**
      * 菜单列表接口

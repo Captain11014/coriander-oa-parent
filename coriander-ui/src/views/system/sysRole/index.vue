@@ -69,6 +69,13 @@
               @click="batchRemove(scope.row.id)"
               title="删除"
             />
+            <el-button
+              type="warning"
+              icon="el-icon-baseball"
+              size="mini"
+              @click="showAssignAuth(scope.row)"
+              title="分配权限"
+            />
           </template>
         </el-table-column>
       </el-table>
@@ -228,6 +235,13 @@ export default {
         roleName: undefined
       };
       this.getSysRoleList();
+    },
+
+    /**分配菜单权限 */
+    showAssignAuth(row) {
+      this.$router.push(
+        "/system/assignAuth?id=" + row.id + "&roleName=" + row.roleName
+      );
     },
 
     //删除
