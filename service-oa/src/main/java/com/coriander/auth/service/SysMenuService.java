@@ -4,6 +4,7 @@ package com.coriander.auth.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.coriander.model.system.SysMenu;
 import com.coriander.vo.system.AssignMenuVo;
+import com.coriander.vo.system.RouterVo;
 
 import java.util.List;
 
@@ -41,4 +42,17 @@ public interface SysMenuService extends IService<SysMenu> {
      * @param assignMenuVo
      */
     void doAssign(AssignMenuVo assignMenuVo);
+
+    /**
+     * 查询数据库动态构建路由结构，进行显示
+     * @return
+     */
+    List<RouterVo> findUserMenuListByUserId(Long userId);
+
+    /**
+     * 根据用户id获取用户可操作按钮列表
+     * @param userId
+     * @return
+     */
+    List<String> findMenuPermsByUserId(Long userId);
 }

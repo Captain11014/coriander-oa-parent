@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.coriander.auth.service.SysUserService;
 import com.coriander.common.core.BaseController;
 import com.coriander.common.result.AjaxResult;
+import com.coriander.common.utils.MD5;
 import com.coriander.common.utils.StringUtil;
 import com.coriander.common.utils.page.TableDataInfo;
 import com.coriander.model.system.SysUser;
@@ -75,6 +76,9 @@ public class SysUserController extends BaseController {
     @ApiOperation("添加用户")
     @PostMapping("/addSysUser")
     public AjaxResult addSysUser(@RequestBody SysUser sysUser){
+        //加密密码
+        String pwdMD5 = MD5.encrypt(sysUser.getPassword());
+        sysUser.setPassword(pwdMD5);
         boolean b = sysUserService.save(sysUser);
         return toAjax(b);
     }

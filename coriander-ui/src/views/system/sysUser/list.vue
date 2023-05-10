@@ -31,7 +31,7 @@
 
     <!-- 工具条 -->
     <div class="tools-div">
-      <el-button type="success" icon="el-icon-plus" size="mini" @click="handleAdd">添 加</el-button>
+      <el-button type="success" icon="el-icon-plus" size="mini" :disabled="$hasBP('bnt.sysUser.add') === false" @click="handleAdd">添 加</el-button>
     </div>
 
     <!-- 列表 -->
@@ -73,6 +73,7 @@
             type="primary"
             icon="el-icon-edit"
             size="mini"
+            :disabled="$hasBP('bnt.sysUser.update') === false"
             @click="handleUpdate(scope.row.id)"
             title="修改"
           />
@@ -80,6 +81,7 @@
             type="warning"
             icon="el-icon-baseball"
             size="mini"
+            :disabled="$hasBP('bnt.sysUser.assignRole') === false"
             @click="showAssignRole(scope.row)"
             title="分配角色"
           />
@@ -87,6 +89,7 @@
             type="danger"
             icon="el-icon-delete"
             size="mini"
+            :disabled="$hasBP('bnt.sysUser.remove') === false"
             @click="batchRemove(scope.row.id)"
             title="删除"
           />
@@ -229,11 +232,11 @@ export default {
     },
     reset() {
       this.form = {
-        id: "",
-        username: "",
-        password: "",
-        name: "",
-        phone: "",
+        id: undefined,
+        username: undefined,
+        password: undefined,
+        name: undefined,
+        phone: undefined,
         status: 1
       };
     },

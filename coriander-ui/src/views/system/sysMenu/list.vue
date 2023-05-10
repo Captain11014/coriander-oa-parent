@@ -2,7 +2,7 @@
   <div class="app-container">
     <!-- 工具条 -->
     <div class="tools-div">
-      <el-button type="success" icon="el-icon-plus" size="mini" @click="add()">添 加</el-button>
+      <el-button type="success" icon="el-icon-plus" size="mini" :disabled="$hasBP('bnt.sysMenu.add') === false" @click="add()">添 加</el-button>
     </div>
     <el-table
       :data="sysMenuList"
@@ -35,6 +35,7 @@
             v-if="scope.row.type !== 2"
             icon="el-icon-plus"
             size="mini"
+            :disabled="$hasBP('bnt.sysMenu.add') === false" 
             @click="add(scope.row)"
             title="添加下级节点"
           />
@@ -42,6 +43,7 @@
             type="primary"
             icon="el-icon-edit"
             size="mini"
+            :disabled="$hasBP('bnt.sysMenu.update') === false" 
             @click="edit(scope.row)"
             title="修改"
           />
@@ -51,7 +53,7 @@
             size="mini"
             @click="removeDataById(scope.row.id)"
             title="删除"
-            :disabled="scope.row.children.length > 0"
+            :disabled="scope.row.children.length > 0 || $hasBP('bnt.sysMenu.update') === false"
           />
         </template>
       </el-table-column>
@@ -269,7 +271,6 @@ export default {
 
     // -------------
     add(row) {
-      debugger;
       this.typeDisabled = false;
       this.dialogTitle = "添加下级节点";
       this.dialogVisible = true;
@@ -300,7 +301,6 @@ export default {
     },
 
     edit(row) {
-      debugger;
       this.dialogTitle = "修改节点";
       this.dialogVisible = true;
 
