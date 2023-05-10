@@ -28,7 +28,7 @@ import java.util.Map;
  */
 @Api(tags = "登录模块")
 @RestController
-@RequestMapping("/admin/system/user")
+@RequestMapping("/admin/system/index")
 public class LoginController extends BaseController {
 
     @Resource

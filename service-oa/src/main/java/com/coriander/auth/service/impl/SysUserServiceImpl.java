@@ -1,5 +1,6 @@
 package com.coriander.auth.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.coriander.auth.mapper.SysUserMapper;
 import com.coriander.auth.service.SysUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -26,5 +27,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             sysUser.setStatus(0);
         }
         this.updateById(sysUser);
+    }
+
+    @Override
+    public SysUser getByUsername(String username) {
+
+        SysUser sysUser = baseMapper.selectOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, username));
+
+        return sysUser;
     }
 }
