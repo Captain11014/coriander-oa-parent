@@ -1,11 +1,14 @@
 package com.coriander.security.fillter;
 
+import com.alibaba.fastjson.JSON;
 import com.coriander.common.result.AjaxResult;
+import com.coriander.common.result.HttpStatus;
 import com.coriander.common.utils.ResponseUtil;
 import com.coriander.common.utils.jwt.JwtHelper;
 import com.coriander.security.custom.CustomUser;
 import com.coriander.vo.system.LoginVo;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,11 +33,14 @@ import java.util.Map;
  */
 public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
 
-    public TokenLoginFilter(AuthenticationManager authenticationManager) {
+    private RedisTemplate redisTemplate;
+
+    public TokenLoginFilter(AuthenticationManager authenticationManager,RedisTemplate redisTemplate) {
         this.setAuthenticationManager(authenticationManager);
         this.setPostOnly(false);
         //指定登录接口及提交方式，可以指定任意路径
         this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/admin/system/index/login","POST"));
+        this.redisTemplate = redisTemplate;
     }
 
 
@@ -75,6 +81,9 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
         CustomUser customUser = (CustomUser) auth.getPrincipal();
         String token = JwtHelper.createToken(customUser.getSysUser().getId(), customUser.getSysUser().getUsername());
 
+        //保存权限数据
+        redisTemplate.opsForValue().set(customUser.getUsername(), JSON.toJSONString(customUser.getAuthorities()));
+
         Map<String, Object> map = new HashMap<>();
         map.put("token", token);
         ResponseUtil.out(response, AjaxResult.success(map));
@@ -95,7 +104,7 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
         if(e.getCause() instanceof RuntimeException) {
             ResponseUtil.out(response, AjaxResult.error(204, e.getMessage()));
         } else {
-            ResponseUtil.out(response, AjaxResult.error(208,"认证失败"));
+            ResponseUtil.out(response, AjaxResult.error(HttpStatus.UNAUTHORIZED,"认证失败"));
         }
     }
 

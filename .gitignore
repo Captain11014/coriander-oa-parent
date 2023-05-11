@@ -17,3 +17,5 @@
 target
 build
 .gradle
+
+application-prod.yml

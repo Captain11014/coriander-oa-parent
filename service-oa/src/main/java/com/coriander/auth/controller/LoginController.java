@@ -40,8 +40,6 @@ public class LoginController extends BaseController {
     @ApiOperation("登录")
     @PostMapping("/login")
     public AjaxResult login(@RequestBody LoginVo loginVo){
-        Map<String, Object> map = new HashMap<>();
-//        map.put("token","admin-token");
 
         String username = loginVo.getUsername();
         LambdaQueryWrapper<SysUser> qw = new LambdaQueryWrapper();
@@ -64,6 +62,7 @@ public class LoginController extends BaseController {
 
         //生成token
         String token = JwtHelper.createToken(sysUser.getId(),sysUser.getUsername());
+        Map<String, Object> map = new HashMap<>();
 
         map.put("token",token);
 

@@ -15,6 +15,7 @@ import com.coriander.vo.system.SysRoleQueryVo;
 import com.github.pagehelper.PageHelper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -51,7 +52,7 @@ public class SysRoleController extends BaseController {
         return success();
     }
 
-
+    @PreAuthorize("hasAuthority('bnt.sysRole.list')")
     @ApiOperation("根据id查询角色")
     @GetMapping("/findSysRoleById/{id}")
     public AjaxResult findSysRoleById(@PathVariable Long id){
@@ -65,6 +66,7 @@ public class SysRoleController extends BaseController {
      * @param sysRoleQueryVo
      * @return
      */
+    @PreAuthorize("hasAuthority('bnt.sysRole.list')")
     @ApiOperation(value = "分页查询接口")
     @GetMapping("/findAll")
     public TableDataInfo findAll(SysRoleQueryVo sysRoleQueryVo){
@@ -86,6 +88,7 @@ public class SysRoleController extends BaseController {
      * @param sysRole
      * @return
      */
+    @PreAuthorize("hasAuthority('bnt.sysRole.add')")
     @ApiOperation("添加角色")
     @PostMapping("/addSysRole")
     public AjaxResult addSysRole(@RequestBody SysRole sysRole){
@@ -99,6 +102,7 @@ public class SysRoleController extends BaseController {
      * @param sysRole
      * @return
      */
+    @PreAuthorize("hasAuthority('bnt.sysRole.update')")
     @ApiOperation("更新角色")
     @PostMapping("/updateSysRole")
     public AjaxResult updateSysRole(@RequestBody SysRole sysRole){
@@ -124,6 +128,7 @@ public class SysRoleController extends BaseController {
      * @param id
      * @return
      */
+    @PreAuthorize("hasAuthority('bnt.sysRole.remove')")
     @ApiOperation("根据Id删除角色")
     @PostMapping("/delSysRoleById/{id}")
     public AjaxResult delSysRoleById(@PathVariable Long id){
@@ -136,6 +141,7 @@ public class SysRoleController extends BaseController {
      * @param ids
      * @return
      */
+    @PreAuthorize("hasAuthority('bnt.sysRole.remove')")
     @ApiOperation("根据id批量删除")
     @PostMapping("/batchDelSysRole/{ids}")
     public AjaxResult batchDelSysRole(@PathVariable Long[] ids){

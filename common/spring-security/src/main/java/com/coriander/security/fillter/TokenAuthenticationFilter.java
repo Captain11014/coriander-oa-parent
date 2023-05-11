@@ -1,10 +1,14 @@
 package com.coriander.security.fillter;
 
+import com.alibaba.fastjson.JSON;
 import com.coriander.common.result.AjaxResult;
+import com.coriander.common.result.HttpStatus;
 import com.coriander.common.utils.ResponseUtil;
 import com.coriander.common.utils.StringUtil;
 import com.coriander.common.utils.jwt.JwtHelper;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -13,7 +17,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 认证解析token过滤器
@@ -22,9 +29,11 @@ import java.util.Collections;
  */
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
+    private RedisTemplate redisTemplate;
 
-    public TokenAuthenticationFilter() {
 
+    public TokenAuthenticationFilter(RedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -42,7 +51,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             chain.doFilter(request, response);
         } else {
-            ResponseUtil.out(response, AjaxResult.error(301,"认证失败"));
+            ResponseUtil.out(response, AjaxResult.error(HttpStatus.UNAUTHORIZED,"认证失败"));
         }
     }
 
@@ -51,10 +60,18 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         String token = request.getHeader("token");
         logger.info("token:"+token);
         if (!StringUtil.isEmpty(token)) {
-            String useruame = JwtHelper.getUsername(token);
-            logger.info("useruame:"+useruame);
-            if (!StringUtils.isEmpty(useruame)) {
-                return new UsernamePasswordAuthenticationToken(useruame, null, Collections.emptyList());
+            String username = JwtHelper.getUsername(token);
+            logger.info("username:"+username);
+            if (!StringUtil.isEmpty(username)) {
+                String authoritiesString = (String) redisTemplate.opsForValue().get(username);
+                List<Map> mapList = JSON.parseArray(authoritiesString, Map.class);
+                List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+                for (Map map : mapList) {
+                    authorities.add(new SimpleGrantedAuthority((String)map.get("authority")));
+                }
+                return new UsernamePasswordAuthenticationToken(username, null, authorities);
+            } else {
+                return new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
             }
         }
         return null;

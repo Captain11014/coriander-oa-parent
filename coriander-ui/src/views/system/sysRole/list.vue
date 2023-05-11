@@ -63,11 +63,11 @@
               @click="edit(scope.row.id)"
               title="修改"
             />
+            <!-- :disabled="$hasBP('bnt.sysRole.remove') === false" -->
             <el-button
               type="danger"
               icon="el-icon-delete"
               size="mini"
-              :disabled="$hasBP('bnt.sysRole.remove') === false"
               @click="batchRemove(scope.row.id)"
               title="删除"
             />
