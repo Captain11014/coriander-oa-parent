@@ -22,8 +22,8 @@ import java.util.List;
  *
  *
  */
-@Configuration
-@EnableSwagger2WebMvc
+//@Configuration
+//@EnableSwagger2WebMvc
 public class Knife4jConfig {
 
 
@@ -62,5 +62,6 @@ public class Knife4jConfig {
                 .version("1.0")
                 .build();
     }
+
 
 }

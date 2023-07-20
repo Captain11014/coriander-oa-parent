@@ -27,9 +27,10 @@ public class MyBatisPlusConfig {
         return interceptor;
     }
 
-    @Bean
-    public ConfigurationCustomizer configurationCustomizer() {
-        return configuration -> configuration.setUseDeprecatedExecutor(false);
-    }
+//    @Bean
+//    public ConfigurationCustomizer configurationCustomizer() {
+////        return configuration -> configuration.setUseDeprecatedExecutor(false);
+////        return configuration -> configuration.setUseDeprecatedExecutor(false);
+//    }
 
 }

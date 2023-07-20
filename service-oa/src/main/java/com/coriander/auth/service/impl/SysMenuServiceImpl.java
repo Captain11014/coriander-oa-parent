@@ -60,8 +60,10 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     public void removeMenuById(Long id) {
         LambdaQueryWrapper<SysMenu> qw = new LambdaQueryWrapper<>();
         qw.eq(SysMenu::getParentId,id);
-        int count = baseMapper.selectCount(qw);
-        if(count > 0){
+//        int count = baseMapper.selectCount(qw);
+        boolean count = baseMapper.exists(qw); //// mp 3.5.1
+//        if(count > 0){
+        if(count){// mp 3.5.1
             throw new CorianderException(201,"菜单不能删除");
         }
         baseMapper.deleteById(id);
